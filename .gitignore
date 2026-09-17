@@ -1,0 +1,16 @@
+# CODEX_HOME contains runtime data; version only orchestration sources.
+/*
+!/.gitignore
+!/AGENTS.md
+!/README.md
+!/USAGE.md
+!/config.toml
+!/agents/
+!/workflows/
+!/templates/
+!/scripts/
+!/skills/
+# Codex bootstraps bundled skills here; they are runtime-managed.
+/skills/.system/
+.DS_Store
+__pycache__/

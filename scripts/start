@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -lt 1 || $# -gt 2 ]]; then
+  printf 'Usage: bash %s PROJECT_DIRECTORY [INITIAL_PROMPT]\n' "$0" >&2
+  exit 2
+fi
+
+team_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+project_root="$(cd -- "$1" && pwd -P)"
+
+case "$project_root/" in
+  "$team_root/"*)
+    printf 'Choose a project outside ai-team. Launch codex directly for ai-team maintenance.\n' >&2
+    exit 2
+    ;;
+esac
+case "$team_root/" in
+  "$project_root/"*)
+    printf 'Choose the concrete project, not a parent directory containing ai-team.\n' >&2
+    exit 2
+    ;;
+esac
+
+if [[ $# -eq 2 ]]; then
+  exec env CODEX_HOME="$team_root" codex --strict-config --cd "$project_root" -- "$2"
+else
+  exec env CODEX_HOME="$team_root" codex --strict-config --cd "$project_root"
+fi

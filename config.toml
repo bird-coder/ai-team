@@ -1,0 +1,15 @@
+# Main session model. Custom agents retain their own model assignments.
+model = "gpt-5.6-sol"
+model_reasoning_effort = "high"
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3
+
+[projects."/Users/jiajie.yu/go/src/cas-texas-server"]
+trust_level = "trusted"
+
+[tui.model_availability_nux]
+gpt-6-astra = 2
