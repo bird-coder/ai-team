@@ -33,19 +33,19 @@ templates/ 仅供人工使用，由 Git 管理，不属于工作流指令来源�
 
 ## 配置与职责
 
-- config.toml：主会话 gpt-6-astra / high，与 orchestrator 角色保持一致；workspace-write，on-request 审批，
+- config.toml：主会话 gpt-5.6-sol / high，与 orchestrator 角色保持一致；workspace-write，on-request 审批，
   最多 3 个并发子线程。
 - AGENTS.md：此 CODEX_HOME 的全局入口，要求主会话负责调度。
 - agents/*.toml：各子角色的模型、权限和职责。
 - workflows/project-context.md：两工作流共用的项目规则、角色选择和委派约定。
 - workflows/requirements-review.md：独立需求审核入口，完成后交接并停止。
 - workflows/development.md：独立开发入口，核验并理解已审核需求后进行设计、实现与验收。
-- skills/：两项共享技能：ai-team-unit-tests（单元测试验收）和
-  ai-team-developer-handoff（backend/client 公共项目与交接约定）。
+- skills/：ai-team-unit-tests（单元测试验收）、ai-team-developer-handoff（开发交接），
+  以及固定版本的 ponytail-review（按需复杂度审查）。开发精简约束已并入开发交接技能。
 
 | 角色 | 模型 | 推理强度 |
 | --- | --- | --- |
-| orchestrator、architect、reviewer | gpt-6-astra | high |
+| orchestrator、architect、reviewer | gpt-5.6-sol | high |
 | product | gpt-5.6-sol | high |
 | backend | gpt-5.6-terra | high |
 | planner、client、qa | gpt-5.6-terra | medium |
@@ -58,6 +58,19 @@ templates/ 仅供人工使用，由 Git 管理，不属于工作流指令来源�
 这是配置与指令驱动的工作流，不是禁止其他行为的执行引擎。
 项目指令、启动参数及运行时权限仍可能影响执行；角色/模型不可用时应报告，
 不能悄悄替换。存在 orchestrator.toml 不会自动设置主会话模型。
+
+## 开发阶段避免过度设计
+
+backend/client 遵循现有开发交接技能中的精简约束，优先复用现有代码、
+标准库和项目能力；无需另读 ponytail，也不为每次修改额外启动审查。
+reviewer 遇到新增抽象、依赖、通用封装或明显重复代码时，按需读取 ponytail-review，
+将复杂度建议与正确性审查分别记录，不替代独立审核，也不增加开发自查的重复循环。
+其他角色不默认加载；未新增角色、全局插件或 hooks。
+
+精简建议不能覆盖项目规则、已批准需求/设计、单元测试标准和交接要求。
+不得为减少行数删去必要接口、测试或安全处理；重大简化先走人工 review。
+减少行数不是验收目标，也不保证减少 token，实际收益需在项目中观察。
+开发精简约束保留来源说明，ponytail-review 保留上游原文；来源、固定提交和许可证见 [skills/UPSTREAM.md](skills/UPSTREAM.md)。
 
 ## 项目选择开发角色
 
@@ -72,7 +85,11 @@ development_roles: [backend]
 未填写时根据项目和任务识别，范围不清楚时才询问。
 
 其他角色保持不变，单端项目仍完成需求评审、设计、计划、开发、Review 和 QA。
-不会调用或等待未选中的开发角色，其配置文件不存在也不会阻断流程。
+development_roles 只选择实现负责人，不限制只读设计咨询。涉及交互、跨端协议、
+状态同步/重连时，编排者按需邀请对端角色参与设计评审；纯内部改动不固定调用。
+咨询以 allowed_paths: [] 返回意见，由 architect 整合、编排者保存，不写对端代码或测试，
+实现阶段指令不适用于只读咨询。未选端的实现不调用、不等待；咨询角色不可用时记录限制，
+由 architect/reviewer 核对现有依据，不因角色缺失单独阻断，也不掩盖实际协议证据缺口。
 若需求确实需要修改另一端，先明确范围或调整选择；选中的角色本身不可用、
 需求未确认、测试缺少必要环境等真实问题仍会报告，不会伪造通过。
 人工模板 templates/project-AGENTS.md 已包含三种选择示例。
@@ -131,23 +148,7 @@ project_rules_file: docs/blackjack/project-rules.md
 也可在任务中写 `workflow: requirements-review` 或 `workflow: development`；
 这是 ai-team 提示约定，不是 CLI 参数或 config.toml 配置项。
 
-```text
-workflow: requirements-review
-project_rules_file: docs/<模块>/project-rules.md
-请理解和审核 <需求原件路径>，集中输出 review.md 供我回复和确认。
-不要逐个问题等待回复；先完成可独立进行的分析，确认基线后输出交接产物并停止。
-```
-
-审核完成后，在同一或新会话明确启动开发：
-
-```text
-workflow: development
-project_rules_file: docs/<模块>/project-rules.md
-依据 <已确认审核轮次的gate.md及handoff.md路径> 启动开发。
-请先让 product 对照原始需求和已确认问答重新理解，再设计并拆分技术任务。
-输出架构、接口、开发任务及测试方案，集中到 design/review.md 供我 review。
-在我明确批准当前文档包之前，不编写代码、协议源文件、代码骨架或可执行测试。
-```
+启动、问题回复、批准和恢复的可复制指令统一见 [USAGE.md](USAGE.md)。
 
 只给原件或要求“审核后开发”，但尚无批准交接时，先走审核并在交接处停止。
 需求确认本身不自动启动开发。已有基线的开发任务可直接指定开发入口；无效或
@@ -217,7 +218,7 @@ round 是版本检查点，不是每条回复都重做全套文档。当前轮�
 
 独立启动后，必须先调用 product 对照原件与审核产物，核对业务理解、覆盖、确认依据和风险。
 architect 对照原文、已确认补充/修正和验收条件理解全部在开发范围内的需求，
-在开发状态中简要记录目标、边界和差异。不能只看到“审核通过”就开始写代码。
+在可冻结的设计章节中记录目标、边界和差异，开发状态只引用批准版本。不能只看到“审核通过”就开始写代码。
 基线有效时不重复已解决的问答；发现新需求、冲突或缺失证据，反馈受影响编号，
 进入用户指示的需求复核，保留独立任务进度。复核交接后由用户明确恢复开发。
 
@@ -317,3 +318,9 @@ CODEX_HOME=/Users/jiajie.yu/go/src/ai-team codex features list
 
 官方参考：[CODEX_HOME 与 AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、
 [自定义角色](https://learn.chatgpt.com/docs/agent-configuration/subagents)。
+
+## 维护验证
+
+执行 `python3 -B -m unittest discover -s tests -p 'test_*.py' -v` 验证启动脚本与配置基本完整性。
+审批、恢复、咨询权限和 skill 行为按 [场景检查](tests/workflow-scenarios.md) 在隔离项目中验证；
+脚本通过不代表模型行为通过。当前不引入额外状态机或在线自动评测平台。

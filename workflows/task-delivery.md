@@ -69,8 +69,8 @@ status from child evidence so concurrent children cannot overwrite one another.
 | READY | Applicable gates and handoff readiness pass; prerequisites satisfied |
 | IN_PROGRESS | Assigned owner is performing the unit |
 | IN_REVIEW | Owner supplies file list, baseline, tests/results and open risks |
-| IN_QA | Independent review has no unresolved P0/P1; required unit tests pass |
-| DONE | Required QA/checks pass on current code and reports are saved |
+| IN_QA | Independent review has no unresolved P0/P1; phase-applicable checks below pass, including required implementation unit tests |
+| DONE | Required QA/checks pass on current deliverables and reports are saved |
 | BLOCKED | Specific unmet prerequisite recorded, with previous state and next action |
 | NOT_APPLICABLE | Explicitly out of agreed scope, with reason; not a fake pass |
 

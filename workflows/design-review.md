@@ -5,11 +5,14 @@
 Enter only in an explicitly started development workflow after its intake has
 verified READY_FOR_DESIGN for the current requirements baseline. The
 orchestrator coordinates; architect authors design content read-only, selected
-developers inspect feasibility read-only, reviewer independently reviews design,
+developers and relevant counterpart consultants inspect feasibility read-only per
+project-context.md's role rules, reviewer independently reviews design,
 and QA reviews testability without executing business tests. The parent persists
 their outputs inside the target project. No extra roles or per-project workflow
 copies are needed. A single-end project reviews the external counterpart's contract
-without requiring an unselected developer or inventing its implementation.
+without requiring an unselected end's implementation. Invite its design perspective
+when relevant; record consultation findings or evidence limitations in the same
+review package, without inventing its implementation or enabling that code branch.
 
 ## Required design
 
@@ -40,7 +43,8 @@ handwritten schemas or manually patch generated output.
 
 ## Design review and contract materialization
 
-1. Architect proposes the design; selected developers flag implementation problems,
+1. Architect proposes architecture, interaction flows and protocols; selected
+   developers and relevant counterpart consultants flag implementation/consumption problems,
    reviewer checks correctness/compatibility and QA checks observable acceptance.
 2. Resolve agent-fixable findings and collect human decisions without interrupting
    independent document work. When technical design checks pass, record DESIGN_REVIEWED
@@ -59,8 +63,12 @@ handwritten schemas or manually patch generated output.
    developer to materialize agreed interface declarations, protocol sources and
    necessary skeletons in owned paths. Separate this task from business logic.
    Generated outputs must follow the project's generation procedure.
-5. Reviewer verifies that materialized contracts match the approved design; run
-   applicable schema/generation/compilation checks. A skeleton need not pretend to
+5. The assigned developer runs schema/generation/compilation checks and supplies
+   exact commands, resulting changes and evidence. Reviewer independently checks
+   the materialized contracts against the approved design and evidence. Checks
+   requiring writes stay with the authorized developer, or an explicitly authorized
+   isolated validation workspace; do not run generators as a read-only reviewer.
+   A skeleton need not pretend to
    pass feature acceptance or contain fake success implementations. Do not add
    reachable panic/TODO behavior to an existing working application as scaffolding.
 6. Orchestrator records READY_FOR_IMPLEMENTATION only when materialized contracts
@@ -124,6 +132,14 @@ Architecture may live in the existing architecture directory; reference it rathe
 than duplicate it. Protocol/interface source stays in the project's actual source
 directories. Gate records include exact source identities, evidence and unresolved
 issues. Previous design rounds and decisions must remain traceable.
+
+Freeze approved document content via a commit, immutable snapshot or equivalent
+retrievable version. Include the product intake section in that content; status.md
+only links the approved version and carries mutable progress. Hash approved content,
+not the entire status log or the approval record itself (which gains approval metadata).
+Progress-only updates do not invalidate design approval; semantic changes still do.
+For legacy intake stored in status.md, preserve its exact approved section snapshot
+and provenance; do not retroactively claim new content was approved.
 
 On resume, compare current requirement/design/contract/code identities with recorded
 gates and assignments. Revalidate affected gates/checks when changed; never reuse

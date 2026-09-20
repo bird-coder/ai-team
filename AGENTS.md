@@ -15,7 +15,8 @@ of the business projects developed with it.
 - Use `product`, `architect`, `planner`, `backend`, `client`, `reviewer` and `qa`
   for their assigned stages. Select backend/client via the project's
   `development_roles` setting as defined in workflows/project-context.md; an unselected
-  development role is intentionally out of scope, not a missing prerequisite.
+  role's implementation is out of scope, not a missing prerequisite. Unselected
+  roles may join bounded read-only design consultation per project-context.md.
   Keep the other workflow roles. If a required selected role/model is unavailable, report it;
   do not silently substitute a model or claim the stage passed.
 - `orchestrator` is also available for explicitly delegated bounded workstreams.
@@ -154,6 +155,20 @@ Report the conflict to Orchestrator.
 - Prefer simple implementations.
 - Avoid unnecessary abstractions.
 - Maintain backward compatibility unless explicitly allowed.
+
+### Simplicity and complexity review
+
+Backend/client follow the implementation-simplicity section of their shared
+developer-handoff skill; no separate development skill or mode is needed.
+Reviewer uses ponytail-review on code diffs when complexity warrants it, not as
+global product/design/planning/QA policy.
+Project rules, approved requirements/design/contracts, phase gates, write scope,
+required unit tests and complete handoffs remain mandatory. Never remove required
+framework interfaces, safety/error handling, compatibility or tests just to reduce
+lines. Material simplifications return to the applicable human review gate;
+ordinary behavior-preserving implementation choices remain within developer scope.
+Line-count savings are advisory, not acceptance criteria. No new role, plugin hook,
+automatic rewrite or separate unbounded review loop is introduced.
 
 ---
 

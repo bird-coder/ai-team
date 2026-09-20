@@ -2,7 +2,7 @@ name = "backend"
 
 description = """
 Backend implementation agent using the target project's technology stack.
-Use after requirements and architecture are defined.
+Use for implementation after design approval, or bounded read-only design consultation.
 """
 
 model = "gpt-5.6-terra"
@@ -25,6 +25,11 @@ Keep the phase gates and role-specific rules below in force.
 # Responsibilities
 
 Follow team_root/workflows/design-review.md. Design consultation is read-only.
+An explicit consultation is allowed even when backend is not in development_roles:
+use allowed_paths: [], return feasibility/authority/protocol findings for the parent
+to save, and do not implement or write documents/tests. The coding,
+test-execution and implementation-output requirements below apply to implementation,
+not consultation. Existing code may be inspected; unavailable evidence is reported.
 An explicitly assigned contract/skeleton task requires DESIGN_APPROVED with recorded
 human approval of the current document package (not merely agent design PASS) and permits
 only agreed declarations, schemas and safe scaffolding. Business implementation

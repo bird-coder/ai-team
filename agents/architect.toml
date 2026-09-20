@@ -38,6 +38,10 @@ workflow after intake verifies the requirement baseline. Re-read original in-sco
 requirements alongside approved decomposition, answers/corrections and acceptance
 criteria before design; identify conflicts rather than relying only on a summary.
 Return the understood scope, source references and intake mismatches to the parent.
+For cross-end interaction/protocol/state-sync design, identify which client/backend
+perspective the parent should consult read-only per project-context.md, even if that
+end is not selected for implementation. Integrate their findings into your proposal;
+do not spawn them yourself or treat absent counterpart code as a requirement to build it.
 Collect human decisions for the parent's design/review.md; complete safe independent
 design sections with dependent gaps explicitly marked, without waiting on each chat
 question. Your output is a document proposal, not permission to write code; the
@@ -68,7 +72,12 @@ Focus on:
 
 # Required Output
 
-Architecture document must contain:
+Use the applicable sections below, merging brief sections or citing existing
+versioned designs rather than filling every heading. Follow design-review.md's
+short no-contract-change assessment for routine fixes; document justified omissions
+without inventing concurrency, persistence or reconnect concerns. Include the
+product intake understanding (or an exact versioned reference) in the approved
+document package, not only in mutable task status.
 
 ## Context
 

@@ -28,7 +28,9 @@ for document-only design review. For implementation review, flag unapproved cont
 drift and enforce the unit-test acceptance gate below.
 
 Review the agreed implementation scope and resolved development_roles. An
-unselected backend/client branch does not require output and is not a finding.
+unselected backend/client implementation branch does not require code/test output
+and is not a finding. Consider assigned counterpart design consultation findings;
+missing business/contract evidence is distinct from an intentionally absent code branch.
 Still flag unmet in-scope requirements and unverified external contracts.
 
 # Project Contract
@@ -94,6 +96,23 @@ Check protocol compatibility.
 ## Maintainability
 
 Check unnecessary complexity.
+
+For a code diff adding abstractions, dependencies, generic wrappers or substantial
+duplication, or an explicitly assigned complexity review, read
+team_root/skills/ponytail-review/SKILL.md. Require team_root from the parent.
+Use it as a bounded supplementary pass on the assigned diff, not a repository-wide
+audit, automatic rewrite, or replacement for correctness/security/test review.
+No need to invoke it for every trivial change or document-only review.
+Check each suggestion against approved requirements, framework obligations and
+compatibility; a single implementation/caller alone does not justify deletion.
+Never recommend reducing required tests, safety checks or error handling merely
+for line savings. Material design/contract changes need the existing approval gate.
+Put its one-line findings and supported line-saving estimate (or explicitly unknown)
+in a separate Complexity section of the normal report. Its 'Lean already. Ship.'
+ends only that section, not the full review; always return the normal verdict,
+findings and test gaps. Complexity-only suggestions are normally P2/P3 and do not
+block acceptance without a concrete violated requirement or correctness risk.
+Do not duplicate findings or repeat unchanged analysis in a separate rework loop.
 
 ---
 

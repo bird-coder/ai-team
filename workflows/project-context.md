@@ -132,7 +132,7 @@ workflow's gates and write boundaries. A project's approval is an input to the
 corresponding gate, not permission to skip later stages. Explicitly supplied project
 templates are distinct from the human-only templates under team_root.
 Reading counterpart protocol/integration rules does not enable an unselected
-client/backend role or authorize changes in another project.
+client/backend implementation branch or authorize changes in another project.
 
 Report conflicting requirements, existing docs, code and skill instructions with
 their sources. Do not edit business rules to remove a disagreement or treat an
@@ -157,9 +157,33 @@ development_roles: [backend, client]
 
 The primary orchestrator and product, architect, planner, reviewer and QA stages
 remain in place in all three modes. Only implementation ownership changes.
-Do not spawn, require, or wait for the unselected development role. Its TOML file
-may be absent without affecting that project's workflow. Merely loading an agent
-definition does not require invoking it.
+Do not assign or wait for implementation/tests from an unselected role. Its absence
+alone does not block a single-end project. Merely loading an agent definition does
+not require invoking it. Design consultation is distinct from implementation selection:
+
+- For client interaction, cross-end protocols, or state synchronization/reconnect
+  design, request bounded client consultation even in backend-only projects; request
+  backend consultation for server-contract/authority concerns in client-only projects.
+  Purely internal changes do not require an opposite-end consultation.
+- Architect owns the integrated architecture/flow/protocol proposal. Consultants
+  inspect usability and feasibility from their end, not redefine business requirements
+  or approve the whole design. Reviewer and QA retain their independent checks.
+- Delegate explicitly as read-only design consultation with allowed_paths: [], exact
+  inputs and response-only output paths. No code, schema, tests, generated files or
+  document writes; parent persists findings in the existing design review package.
+  Implementation-stage instructions and implemented-feature test evidence do not apply.
+  allowed_paths is an instruction boundary, not a sandbox setting. If the runtime
+  supports a verified per-assignment read-only restriction, use it and record the
+  effective restriction; do not invent a config field or change global role permissions.
+  Otherwise disclose instruction-only isolation, record the initial working-tree
+  baseline (including relevant untracked files), and inspect changes after consultation.
+  Unexpected edits are not accepted or automatically reverted; identify ownership
+  and report them. Do not attribute concurrent authorized writes to the consultant.
+- Record whether consultation was needed, used, or unavailable and why. If an
+  unselected consultant is unavailable, report it without pretending it ran; architect
+  and reviewer assess the counterpart contract with available evidence. Missing
+  decisions/evidence still block dependent design approval; missing that role alone
+  does not. Do not silently substitute its model or invent an external implementation.
 
 If the setting is absent, infer backend/client needs from project contents and
 the task, record the resolved selection and evidence in task status, and proceed
@@ -169,8 +193,8 @@ Empty/unknown/conflicting selections require correction, not silently enabling
 all roles. Explicit user changes to the selection override the project default.
 
 Pass the resolved selection and implementation scope to all stage owners.
-Planner creates tasks only for selected developers; independent review and QA
-evaluate the selected scope without requiring an unselected developer's output.
+Planner creates implementation tasks only for selected developers; independent review
+and QA evaluate that scope without requiring unselected implementation/test output.
 Record the other implementation branch as NOT_APPLICABLE with its scope reason,
 not FAIL, BLOCKED or a fabricated PASS. Product/feasibility/acceptance reviews still
 cover every requirement within the agreed scope, even for a single-end project.
@@ -195,7 +219,7 @@ Every assignment includes:
 ```text
 workflow: requirements-review or development (the parent lifecycle, not a child workflow to restart)
 role: configured custom agent name
-development_roles: resolved backend/client selection for this project
+development_roles: resolved backend/client implementation selection for this project
 team_root: absolute workflow repository path
 project_root: absolute target project path
 project_rules_file: resolved selected rules-entry path and scope, or explicit none

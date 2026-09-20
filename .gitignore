@@ -9,6 +9,7 @@
 !/workflows/
 !/templates/
 !/scripts/
+!/tests/
 !/skills/
 # Codex bootstraps bundled skills here; they are runtime-managed.
 /skills/.system/

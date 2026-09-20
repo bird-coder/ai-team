@@ -27,8 +27,9 @@ version from filenames.
    design; planner subsequently cross-checks the same sources against the approved
    design before technical decomposition. Give implementation/review/QA children
    the original sections and decisions relevant to their tasks, not only a task summary.
-3. Record a concise intake result in development status: baseline references,
+3. Record a concise intake result in a versioned design document section: baseline references,
    understood goals/behavior/boundaries, key constraints/dependencies and any mismatches.
+   Status links to it; do not mix approved content with mutable progress logs.
    Do not create a competing requirements document or repeat answered questions.
    Reuse approval for the exact baseline, or documented nonsemantic equivalence
    per requirements-review.md; never claim an unread source was verified.
@@ -85,7 +86,7 @@ Use existing document conventions first. Defaults for new artifacts:
 | --- | --- | --- |
 | Approved requirements handoff | Exact upstream review gate/handoff path | Read-only input; see requirements-review.md |
 | Supplied requirements | `docs/product/source/` (recommended intake location) | Human author; preserve originals |
-| Development understanding | Section in `docs/tasks/<task-id>/status.md`, linking upstream requirements | Orchestrator from product output |
+| Development understanding | Versioned section in the architecture document, linking upstream requirements | Orchestrator from product output |
 | Architecture | `docs/architecture/<task-id>.md` | Orchestrator from architect output |
 | Interfaces/protocol design | `docs/tasks/<task-id>/design/contracts.md` | Orchestrator from architect output |
 | Development/task and test plan | `docs/tasks/<task-id>/plan.md` | Planner |

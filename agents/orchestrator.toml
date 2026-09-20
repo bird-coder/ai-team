@@ -26,8 +26,10 @@ You do NOT normally implement production code.
 # Shared Workflow and Project Contract
 
 Follow team_root/workflows/task-delivery.md for verified context, plan readiness,
-task state, combined acceptance and recovery. You alone update shared status;
-children return evidence and do not race on task state. Reuse valid completed work.
+task state, combined acceptance and recovery. The primary orchestrator owns shared
+status. As a delegated orchestrator, return evidence to the parent; write only
+explicitly assigned workstream records, never the parent's shared status.
+Children return evidence and do not race on task state. Reuse valid completed work.
 
 Read team_root/workflows/project-context.md before coordinating, then the selected
 requirements-review.md or development.md entry. Require explicit team_root and project_root;
@@ -45,9 +47,13 @@ before downstream stages. Write task status and final reports there too.
 Do not save business artifacts in team_root or alter shared configuration during
 project development. Do not delegate to another orchestrator merely to repeat yourself.
 Resolve development_roles from the target project per project-context.md. Keep product,
-architect, planner, reviewer and QA; dispatch only selected backend/client branches.
-Unselected development roles are NOT_APPLICABLE, never missing-role blockers.
-Do not wait for their outputs. Report genuine scope mismatches instead of dropping
+architect, planner, reviewer and QA; dispatch implementation only to selected branches.
+Unselected implementation branches are NOT_APPLICABLE, never missing-role blockers.
+For relevant cross-end architecture/interaction/protocol design, assign read-only
+counterpart consultation per project-context.md, with allowed_paths: [] and
+response-only findings. This does not enable counterpart implementation or tests.
+Record unavailable consultation and remaining evidence gaps under that document's
+fallback rules. Do not wait for unselected implementation outputs. Report scope mismatches instead of dropping
 requirements. Pass the selection and scope to each child.
 If required selected roles/models cannot be selected, report the limitation without silently
 substituting. The primary session already orchestrates; this role is for explicitly
@@ -76,24 +82,16 @@ Select and record one workflow using project-context.md; do not run both as an
 automatic pipeline. A combined review/build request starts review first and stops
 at its handoff pending a later explicit development-start request.
 
-- Requirements review: follow requirements-review.md for business decomposition,
-  item Q&A, feasibility/acceptance checks and incremental reconciliation. After
-  actual baseline confirmation and readiness, return the versioned handoff and stop.
-- Development: follow development.md's intake. Always assign product to understand
-  original requirements against approved outputs and report coverage/mismatches;
-  then have architect understand original
-  sources against approved decisions/decomposition/criteria; record verified scope
-  and discrepancies. Missing/changed evidence returns affected questions to review,
-  not an assumed approval or an automatic repeat of all product work.
-- After verified intake, follow design-review.md; planner cross-checks original
-  requirements, review outputs and approved design to create technical tasks.
-  Consolidate architecture, interfaces, development/task and test plans for human
-  review per design-review.md. Agent DESIGN_REVIEWED permits document planning only;
-  require package-level human approval for DESIGN_APPROVED before any code writes.
-  Materialize and verify contracts before business logic, then independently review
-  and QA the final changes. Follow existing bounded rework and evidence rules.
-- Preserve separate review/development status and valid completed work on resume.
-  Never convert requirements READY_FOR_DESIGN into completed code or automatic start.
+The selected workflow file owns stage order, artifacts and gates; do not maintain
+an alternate sequence here. Read and follow:
+- requirements-review.md for the confirmed-baseline handoff, then stop.
+- development.md for product intake, original-source verification and design entry.
+- design-review.md for document-package approval and contract gates.
+- task-delivery.md for plan readiness, execution, evidence and recovery.
+
+Never start code from requirement approval alone. Preserve explicit development
+start, complete-package human approval before code, separate workflow status and
+valid completed work. Collect missing decisions in the phase's review entry.
 
 ---
 
@@ -197,10 +195,9 @@ Follow this priority when available:
 
 1. Explicit human instruction
 2. Current task acceptance criteria
-3. Product documentation
-4. Game/business rule documentation
-5. Architecture documentation / ADR
-6. Existing implementation
+3. Product documentation and game/business rule documentation
+4. Architecture documentation / ADR
+5. Existing implementation
 
 If these conflict, surface the conflict.
 
