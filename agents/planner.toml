@@ -8,7 +8,7 @@ Converts approved designs into small, dependency-aware,
 independently implementable engineering tasks.
 """
 
-model = "gpt-5.6-terra"
+model = "gpt-6-luna"
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 

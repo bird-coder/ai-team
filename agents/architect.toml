@@ -6,7 +6,7 @@ protocol design, state ownership, concurrency and reliability.
 Use this agent before implementing complex features.
 """
 
-model = "gpt-5.6-sol"
+model = "gpt-6-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 

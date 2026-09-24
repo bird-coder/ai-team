@@ -5,7 +5,7 @@ Independent senior reviewer for correctness,
 concurrency, protocol compatibility and game-state bugs.
 """
 
-model = "gpt-5.6-sol"
+model = "gpt-6-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 
