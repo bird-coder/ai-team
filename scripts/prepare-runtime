@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+team_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+runtime_root="$team_root/.runtime"
+mkdir -p -- "$runtime_root/skills"
+
+link_source() {
+  local target="$1" link="$2"
+  if [[ -L "$link" ]]; then
+    if [[ "$(readlink "$link")" == "$target" ]]; then
+      return
+    fi
+  fi
+  if [[ -e "$link" || -L "$link" ]]; then
+    printf 'Runtime path conflicts with ai-team source: %s\n' "$link" >&2
+    exit 1
+  fi
+  ln -s -- "$target" "$link"
+}
+
+link_source ../AGENTS.md "$runtime_root/AGENTS.md"
+link_source ../config.toml "$runtime_root/config.toml"
+link_source ../agents "$runtime_root/agents"
+
+for skill_file in "$team_root"/skills/*/SKILL.md; do
+  [[ -f "$skill_file" ]] || continue
+  skill_name="$(basename -- "$(dirname -- "$skill_file")")"
+  link_source "../../skills/$skill_name" "$runtime_root/skills/$skill_name"
+done

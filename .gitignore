@@ -1,4 +1,5 @@
-# CODEX_HOME contains runtime data; version only orchestration sources.
+# Codex writes runtime data under .runtime; version only orchestration sources.
+/.runtime/
 /*
 !/.gitignore
 !/AGENTS.md

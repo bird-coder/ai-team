@@ -30,7 +30,8 @@ of the business projects developed with it.
 
 ## Project boundary
 
-- `team_root` is the absolute path to this repository; `project_root` is the
+- `team_root` is the absolute path to this repository, the parent of the
+  `.runtime` CODEX_HOME directory; `project_root` is the
   absolute target project selected with `codex --cd`. Resolve both before writing.
 - Read the target project's applicable AGENTS.md and existing conventions.
   Obtain technology stack, paths, commands and business rules from that project.

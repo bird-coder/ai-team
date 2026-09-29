@@ -7,14 +7,16 @@
 
 ## 启动
 
-当前配置面向 Codex CLI 0.154.0。以此目录作为 CODEX_HOME，具体项目作为工作目录：
+当前配置面向 Codex CLI 0.154.0。推荐使用启动脚本：它会初始化
+`ai-team/.runtime` 作为 `CODEX_HOME`，具体项目作为工作目录：
 
 ```bash
-CODEX_HOME=/Users/jiajie.yu/go/src/ai-team \
-  codex --strict-config --cd /Users/jiajie.yu/go/src/cas-game
+bash /Users/jiajie.yu/go/src/ai-team/scripts/start \
+  /Users/jiajie.yu/go/src/cas-game
 ```
 
-也可使用启动脚本，自动定位 ai-team，并拒绝将自身或包含它的父目录作为业务项目：
+也可在第二个参数中提供初始任务。脚本会自动定位 ai-team，并拒绝将自身或
+包含它的父目录作为业务项目：
 
 ```bash
 bash /Users/jiajie.yu/go/src/ai-team/scripts/start \
@@ -35,7 +37,7 @@ templates/ 仅供人工使用，由 Git 管理，不属于工作流指令来源�
 
 - config.toml：主会话 gpt-6-sol / high，与 orchestrator 角色保持一致；workspace-write，on-request 审批，
   最多 3 个并发子线程。
-- AGENTS.md：此 CODEX_HOME 的全局入口，要求主会话负责调度。
+- AGENTS.md：通过 `.runtime/AGENTS.md` 链接加载的全局入口，要求主会话负责调度。
 - agents/*.toml：各子角色的模型、权限和职责。
 - workflows/project-context.md：两工作流共用的项目规则、角色选择和委派约定。
 - workflows/requirements-review.md：独立需求审核入口，完成后交接并停止。
@@ -292,22 +294,28 @@ BMAD 的快捷实施路径与额外人工审批点不直接照搬，继续遵循
 
 ## 运行数据
 
+启动脚本把仓库中的 `AGENTS.md`、`config.toml`、`agents/` 和自定义技能链接到
+`.runtime/`，Codex 的会话、日志、缓存、认证和其自身的临时文件写入该目录。
+`team_root` 仍是 ai-team 仓库根目录。操作系统或项目工具创建的临时文件
+可能使用系统临时目录或目标项目目录。
+
 切换 CODEX_HOME 后，不要假定原来 ~/.codex 的配置、登录、MCP、插件和个人技能
 会自动沿用。按需单独配置；本仓库不自动复制个人配置或凭据。
-需要登录时，在同一 CODEX_HOME 下执行 codex login。
+需要登录时，先执行 `scripts/prepare-runtime`，再在同一 CODEX_HOME 下执行 codex login。
 模型实际可用性仍取决于账号和提供方。
 
-Codex 可能在此生成会话、日志、缓存和认证等运行数据。
-.gitignore 用顶层源文件白名单将其排除在 Git 外；这是版本管理隔离，
-不是物理隔离，也不阻止 git add -f。不要在受跟踪的配置里写凭据。
-以后可用独立运行目录作为 CODEX_HOME，并安装或链接这里的配置源。
+`.runtime/` 被 Git 忽略；不要在受跟踪的配置里写凭据。直接运行 Codex 时，
+先执行 `scripts/prepare-runtime`，并设置 `CODEX_HOME` 为 ai-team 的 `.runtime`。
+旧版启动方式留下的仓库顶层运行数据需迁入 `.runtime`，不能继续把仓库根目录
+设为 `CODEX_HOME`。
 
 ## 验证
 
 检查配置解析，不启动模型任务：
 
 ```bash
-CODEX_HOME=/Users/jiajie.yu/go/src/ai-team codex features list
+bash /Users/jiajie.yu/go/src/ai-team/scripts/prepare-runtime
+CODEX_HOME=/Users/jiajie.yu/go/src/ai-team/.runtime codex features list
 ```
 
 这不证明角色/模型成功执行。首次小任务要检查实际子线程角色和模型、

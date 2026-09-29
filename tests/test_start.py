@@ -20,8 +20,16 @@ class StartTests(unittest.TestCase):
         self.base = Path(self.tmp.name).resolve()
         self.team = self.base / "team with spaces"
         (self.team / "scripts").mkdir(parents=True)
+        (self.team / "agents").mkdir()
+        (self.team / "skills" / "example-skill").mkdir(parents=True)
+        (self.team / "skills" / "example-skill" / "SKILL.md").write_text("example")
+        (self.team / "AGENTS.md").write_text("instructions")
+        (self.team / "config.toml").write_text("model = 'example'")
         self.start = self.team / "scripts/start"
         shutil.copy2(ROOT / "scripts/start", self.start)
+        prepare = self.team / "scripts/prepare-runtime"
+        shutil.copy2(ROOT / "scripts/prepare-runtime", prepare)
+        prepare.chmod(0o755)
         self.project = self.base / "project with spaces"
         self.project.mkdir()
         self.bin = self.base / "bin"
@@ -47,13 +55,31 @@ class StartTests(unittest.TestCase):
         result = self.run_start(self.project, prompt)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(self.capture.read_text()),
-                         [str(self.team), ['--strict-config', '--cd', str(self.project), '--', prompt]])
+                         [str(self.team / '.runtime'), ['--strict-config', '--cd', str(self.project), '--', prompt]])
+        runtime = self.team / '.runtime'
+        for name in ('AGENTS.md', 'config.toml', 'agents'):
+            self.assertEqual((runtime / name).resolve(), (self.team / name).resolve())
+        self.assertEqual((runtime / 'skills' / 'example-skill').resolve(),
+                         (self.team / 'skills' / 'example-skill').resolve())
 
     def test_project_without_prompt(self):
         result = self.run_start(self.project)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(self.capture.read_text()),
-                         [str(self.team), ['--strict-config', '--cd', str(self.project)]])
+                         [str(self.team / '.runtime'), ['--strict-config', '--cd', str(self.project)]])
+
+    def test_repeated_launch_keeps_runtime_links(self):
+        self.assertEqual(self.run_start(self.project).returncode, 0)
+        self.assertEqual(self.run_start(self.project).returncode, 0)
+
+    def test_conflicting_runtime_source_stops_launch(self):
+        runtime = self.team / '.runtime'
+        runtime.mkdir()
+        (runtime / 'config.toml').write_text('unrelated config')
+        result = self.run_start(self.project)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('conflicts', result.stderr)
+        self.assertFalse(self.capture.exists())
 
     def test_forbidden_roots_never_launch_codex(self):
         for target in [self.team, self.team / 'scripts', self.base]:

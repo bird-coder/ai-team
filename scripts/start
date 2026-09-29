@@ -22,8 +22,11 @@ case "$team_root/" in
     ;;
 esac
 
+"$team_root/scripts/prepare-runtime"
+runtime_root="$team_root/.runtime"
+
 if [[ $# -eq 2 ]]; then
-  exec env CODEX_HOME="$team_root" codex --strict-config --cd "$project_root" -- "$2"
+  exec env CODEX_HOME="$runtime_root" codex --strict-config --cd "$project_root" -- "$2"
 else
-  exec env CODEX_HOME="$team_root" codex --strict-config --cd "$project_root"
+  exec env CODEX_HOME="$runtime_root" codex --strict-config --cd "$project_root"
 fi
