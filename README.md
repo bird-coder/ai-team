@@ -35,7 +35,7 @@ templates/ 仅供人工使用，由 Git 管理，不属于工作流指令来源�
 
 ## 配置与职责
 
-- config.toml：主会话 gpt-6-sol / high，与 orchestrator 角色保持一致；workspace-write，on-request 审批，
+- config.toml：主会话 gpt-6.1-sol / high，与 orchestrator 角色保持一致；workspace-write，on-request 审批，
   最多 3 个并发子线程。
 - AGENTS.md：通过 `.runtime/AGENTS.md` 链接加载的全局入口，要求主会话负责调度。
 - agents/*.toml：各子角色的模型、权限和职责。
@@ -47,8 +47,8 @@ templates/ 仅供人工使用，由 Git 管理，不属于工作流指令来源�
 
 | 角色 | 模型 | 推理强度 |
 | --- | --- | --- |
-| orchestrator、architect、product、reviewer、backend | gpt-6-sol | high |
-| client | gpt-6-sol | medium |
+| orchestrator、architect、product、reviewer、backend | gpt-6.1-sol | high |
+| client | gpt-6.1-sol | medium |
 | planner、qa | gpt-6-luna | medium |
 
 主会话直接编排；orchestrator 子角色用于明确委派的独立工作流。
